@@ -1,69 +1,91 @@
 package com.programacion4.unidad4ej6.config;
 
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.programacion4.unidad4ej6.config.exceptions.CustomException;
+import com.programacion4.unidad4ej6.feature.insumo.dtos.request.InsumoCreateDTO;
 
-import org.springframework.web.bind.MethodArgumentNotValidException;
-
-import java.time.Instant;
 import java.util.List;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
-    /**
-     * Maneja las excepciones personalizadas
-     * @param ex La excepción personalizada
-     * Captura las excepciones personalizadas y las convierte en una respuesta HTTP con el estado de la excepción
-     */
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<BaseResponse<Object>> handleCustomException(CustomException ex) {
-        BaseResponse<Object> response = BaseResponse.builder()
-                .message(ex.getMessage())
-                .errors(ex.getErrors())
-                .timestamp(Instant.now().toString())
-                .build();
+    private static final String ATTR_MENSAJE_ERROR = "mensajeError";
+    private static final String ATTR_ERRORES = "errores";
+    private static final String ATTR_TITULO = "titulo";
+    private static final String ATTR_MENSAJE = "mensaje";
+    private static final String MODEL_INSUMO = "insumo";
 
-        return new ResponseEntity<>(response, ex.getStatus());
-    }
+    private static final String VIEW_ERROR = "error";
+    private static final String VIEW_FORM = "insumos/form";
 
-    /**
-     * Maneja las excepciones de validación
-     * @param ex La excepción de validación
-     * @return La respuesta HTTP con el estado de la excepción
-     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<BaseResponse<Object>> handleValidation(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .map(f -> f.getField() + ": " + f.getDefaultMessage())
-                .toList();
+    public String handleValidation(MethodArgumentNotValidException ex, Model model) {
+        BindingResult bindingResult = ex.getBindingResult();
+        String objectName = bindingResult.getObjectName();
 
-        BaseResponse<Object> response = BaseResponse.builder()
-                .message("Error de validación")
-                .errors(errors)
-                .timestamp(Instant.now().toString())
-                .build();
+        model.addAttribute(objectName, bindingResult.getTarget());
+        model.addAttribute(BindingResult.MODEL_KEY_PREFIX + objectName, bindingResult);
+        model.addAttribute(ATTR_MENSAJE_ERROR, "Revise los datos del formulario");
+        model.addAttribute(ATTR_ERRORES, fieldErrors(bindingResult));
 
-        return ResponseEntity.badRequest().body(response);
+        return VIEW_FORM;
     }
 
-    /**
-     * Maneja las excepciones genéricas
-     * @param ex La excepción genérica
-     * @return La respuesta HTTP con el estado de la excepción
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<BaseResponse<Object>> handleGeneric(Exception ex) {
-        // En producción, no mostrar el ex.getMessage() detallado para evitar fugas de info
-        BaseResponse<Object> response = BaseResponse.builder()
-                .message("Ocurrió un error inesperado")
-                .errors(List.of("Contacte al administrador"))
-                .timestamp(Instant.now().toString())
-                .build();
+    @ExceptionHandler(CustomException.class)
+    public String handleCustomException(CustomException ex, Model model, HttpServletResponse response) {
+        if (ex.getStatus() == HttpStatus.CONFLICT) {
+            return handleConflictOnForm(ex, model);
+        }
 
-        return ResponseEntity.internalServerError().body(response); 
+        response.setStatus(ex.getStatus().value());
+        model.addAttribute(ATTR_TITULO, tituloPorStatus(ex.getStatus()));
+        model.addAttribute(ATTR_MENSAJE, ex.getMessage());
+        model.addAttribute(ATTR_ERRORES, ex.getErrors());
+
+        return VIEW_ERROR;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleGeneric(Exception ex, Model model, HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        model.addAttribute(ATTR_TITULO, "Error inesperado");
+        model.addAttribute(ATTR_MENSAJE, "Ocurrió un error inesperado");
+        model.addAttribute(ATTR_ERRORES, List.of("Contacte al administrador"));
+
+        return VIEW_ERROR;
+    }
+
+    private String handleConflictOnForm(CustomException ex, Model model) {
+        model.addAttribute(ATTR_MENSAJE_ERROR, ex.getMessage());
+        model.addAttribute(ATTR_ERRORES, ex.getErrors());
+
+        if (!model.containsAttribute(MODEL_INSUMO)) {
+            model.addAttribute(MODEL_INSUMO, new InsumoCreateDTO());
+        }
+
+        return VIEW_FORM;
+    }
+
+    private static List<String> fieldErrors(BindingResult bindingResult) {
+        return bindingResult.getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .toList();
+    }
+
+    private static String tituloPorStatus(HttpStatus status) {
+        return switch (status) {
+            case NOT_FOUND -> "No encontrado";
+            case BAD_REQUEST -> "Solicitud inválida";
+            case CONFLICT -> "Conflicto";
+            default -> "Error";
+        };
     }
 }

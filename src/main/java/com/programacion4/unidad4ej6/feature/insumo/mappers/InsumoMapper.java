@@ -1,5 +1,8 @@
 package com.programacion4.unidad4ej6.feature.insumo.mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.programacion4.unidad4ej6.feature.insumo.models.Insumo;
 import com.programacion4.unidad4ej6.feature.insumo.dtos.response.InsumoResponseDTO;
 import com.programacion4.unidad4ej6.feature.insumo.dtos.request.InsumoCreateDTO;
@@ -38,5 +41,11 @@ public class InsumoMapper {
 
     private static Double calcularPrecioEnPesos(Double precioEnDolares, Double valorDolarReferencia) {
         return precioEnDolares * valorDolarReferencia;
+    }
+
+    public static List<InsumoResponseDTO> toResponseDTOList(List<Insumo> insumos) {
+        return insumos.stream()
+                .map(InsumoMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 }

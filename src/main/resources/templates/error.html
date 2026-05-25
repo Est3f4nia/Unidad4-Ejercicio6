@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${titulo} ?: 'Error'">Error</title>
+</head>
+<body>
+    <h1 th:text="${titulo} ?: 'Error'">Error</h1>
+    <p th:text="${mensaje}">Mensaje de error</p>
+    <ul th:if="${errores != null and !errores.isEmpty()}">
+        <li th:each="error : ${errores}" th:text="${error}"></li>
+    </ul>
+    <p><a th:href="@{/}">Volver al inicio</a></p>
+</body>
+</html>

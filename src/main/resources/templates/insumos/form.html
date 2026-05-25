@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nuevo insumo</title>
+</head>
+<body>
+    <h1>Nuevo insumo</h1>
+
+    <p th:if="${mensajeError}" th:text="${mensajeError}" style="color: red;"></p>
+
+    <ul th:if="${errores != null and !errores.isEmpty()}">
+        <li th:each="error : ${errores}" th:text="${error}"></li>
+    </ul>
+
+    <form th:action="@{/insumos}" th:object="${insumo}" method="post">
+        <div>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" type="text" th:field="*{nombre}"/>
+            <span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" style="color: red;"></span>
+        </div>
+        <div>
+            <label for="codigoInterno">Código interno</label>
+            <input id="codigoInterno" type="text" th:field="*{codigoInterno}"/>
+            <span th:if="${#fields.hasErrors('codigoInterno')}" th:errors="*{codigoInterno}" style="color: red;"></span>
+        </div>
+        <div>
+            <label for="precioEnDolares">Precio en dólares</label>
+            <input id="precioEnDolares" type="number" step="0.01" th:field="*{precioEnDolares}"/>
+            <span th:if="${#fields.hasErrors('precioEnDolares')}" th:errors="*{precioEnDolares}" style="color: red;"></span>
+        </div>
+        <div>
+            <label for="valorDolarReferencia">Valor dólar referencia</label>
+            <input id="valorDolarReferencia" type="number" step="0.01" th:field="*{valorDolarReferencia}"/>
+            <span th:if="${#fields.hasErrors('valorDolarReferencia')}" th:errors="*{valorDolarReferencia}" style="color: red;"></span>
+        </div>
+        <button type="submit">Guardar</button>
+    </form>
+
+    <p><a th:href="@{/}">Volver al inicio</a></p>
+</body>
+</html>
