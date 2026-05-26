@@ -13,7 +13,7 @@
         <li th:each="error : ${errores}" th:text="${error}"></li>
     </ul>
 
-    <form th:action="@{/insumos}" th:object="${insumo}" method="post">
+    <form th:action="@{/insumos/save}" th:object="${insumo}" method="post">
         <div>
             <label for="nombre">Nombre</label>
             <input id="nombre" type="text" th:field="*{nombre}"/>
@@ -37,6 +37,8 @@
         <button type="submit">Guardar</button>
     </form>
 
-    <p><a th:href="@{/}">Volver al inicio</a></p>
+    <a th:href="@{/insumos/index}">
+        <button>Volver al Menú Principal</button>
+    </a>
 </body>
 </html>

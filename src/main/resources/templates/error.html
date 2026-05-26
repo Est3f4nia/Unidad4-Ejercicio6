@@ -10,6 +10,6 @@
     <ul th:if="${errores != null and !errores.isEmpty()}">
         <li th:each="error : ${errores}" th:text="${error}"></li>
     </ul>
-    <p><a th:href="@{/}">Volver al inicio</a></p>
+    <p><a th:href="@{/insumos/index}">Volver al inicio</a></p>
 </body>
 </html>

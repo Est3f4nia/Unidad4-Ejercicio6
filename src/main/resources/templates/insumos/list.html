@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Insumos</title>
+</head>
+<body>
+
+<h1>Listado de Insumos</h1>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Código</th>
+        <th>Stock</th>
+        <th>USD</th>
+        <th>Dólar Ref.</th>
+        <th>Precio ARS</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:if="${#lists.isEmpty(insumos)}">
+        <td colspan="7">No hay insumos registrados.</td>
+    </tr>
+
+    <tr th:each="insumo : ${insumos}">
+        <td th:text="${insumo.id}"></td>
+        <td th:text="${insumo.nombre}"></td>
+        <td th:text="${insumo.codigoInterno}"></td>
+        <td th:text="${insumo.stockActual}"></td>
+        <td th:text="${insumo.precioEnDolares}"></td>
+        <td th:text="${insumo.valorDolarReferencia}"></td>
+        <td th:text="${insumo.precioEnPesos}"></td>
+    </tr>
+
+    </tbody>
+</table>
+
+<br>
+
+<a th:href="@{/insumos/index}">
+    <button>Volver al Menú Principal</button>
+</a>
+
+</body>
+</html>
