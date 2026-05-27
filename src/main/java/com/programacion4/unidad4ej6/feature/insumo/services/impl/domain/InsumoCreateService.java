@@ -1,5 +1,6 @@
 package com.programacion4.unidad4ej6.feature.insumo.services.impl.domain;
 
+import com.programacion4.unidad4ej6.feature.insumo.services.impl.tasks.FetchCotizacionDolarTask;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class InsumoCreateService implements IInsumoCreateService {
     
     private final IInsumoRepository insumoRepository;
     private final IInsumoExistsByCodigoInternoService insumoExistsByCodigoInternoService;
+    private final FetchCotizacionDolarTask fetchCotizacionDolarTask;
 
     @Override
     public InsumoResponseDTO createInsumo(InsumoCreateDTO dto) {

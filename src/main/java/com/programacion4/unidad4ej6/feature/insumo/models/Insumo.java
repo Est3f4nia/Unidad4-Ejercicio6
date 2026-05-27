@@ -39,10 +39,11 @@ public class Insumo {
     private Double precioEnDolares;
 
     @Column(nullable = false)
-    private Double valorDolarReferencia;
+    private Double valorDolarReferencia; // tipo de cambio
 
     @Column(nullable = false)
     private Double precioEnPesos;
+    // precioEnDolares * valorDolarReferencia
 
     public void changeStatus() {
         this.activo = !this.activo;

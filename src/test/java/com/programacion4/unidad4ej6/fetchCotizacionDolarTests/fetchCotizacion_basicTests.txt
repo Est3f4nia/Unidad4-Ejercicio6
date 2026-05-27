@@ -1,0 +1,25 @@
+Feature: Actualización automática de cotización dólar
+
+Scenario 1: Actualizar insumo cuando la cotización cambió
+    Given un insumo con valorDolarReferencia 1000
+    And la API devuelve una cotización de 1200
+    And el insumo tiene precioEnDolares 10
+    When se ejecuta fetchCotizacionDolar
+    Then el valorDolarReferencia del insumo debe actualizarse a 1200
+    And el precioEnPesos debe actualizarse a 12000
+    And el insumo debe guardarse en la base de datos
+
+Scenario 2: No actualizar insumo cuando la cotización no cambió
+    Given un insumo con valorDolarReferencia 1200
+    And la API devuelve una cotización de 1200
+    And el insumo tiene precioEnDolares 10
+    When se ejecuta fetchCotizacionDolar
+    Then el precioEnPesos no debe modificarse
+    And el insumo no debe guardarse en la base de datos
+
+ Scenario 3: Manejar error cuando la API no devuelve cotización
+    Given la API devuelve una respuesta sin el campo venta
+    When se ejecuta fetchCotizacionDolar
+    Then debe registrarse el error "Cotizacion no encontrada"
+    And no deben actualizarse insumos
+    And no debe guardarse ningún cambio en la base de datos
