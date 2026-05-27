@@ -19,8 +19,8 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 # default port
 EXPOSE 8080
-# variables de entorno recomendadas
+# variables de entorno
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV JAVA_OPTS="-Xms256m -Xmx512m"
 # comando de ejecución
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
