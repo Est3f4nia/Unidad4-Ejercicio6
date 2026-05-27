@@ -56,7 +56,7 @@ public class FetchCotizacionDolarTask {
             for (Insumo insumo : insumos) {
                 if (Math.abs(insumo.getValorDolarReferencia() - cotizacionDolar) > 0.01) {
 
-                    double nuevoPrecioPesos = insumo.getPrecioEnDolares() * cotizacionDolar;
+                    Double nuevoPrecioPesos = insumo.getPrecioEnDolares() * cotizacionDolar;
 
                     insumo.setValorDolarReferencia(cotizacionDolar);
                     insumo.setPrecioEnPesos(nuevoPrecioPesos);

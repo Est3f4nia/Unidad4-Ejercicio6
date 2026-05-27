@@ -13,12 +13,24 @@ import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/insumos")
 @AllArgsConstructor
 public class InsumoGetController {
 
     private final IInsumoGetService insumoGetService;
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<InsumoResponseDTO>>> all() {
+        return ResponseEntity.ok(
+                BaseResponse.ok(
+                        insumoGetService.all(),
+                        "Lista de productos obtenida correctamente."
+                )
+        );
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<InsumoResponseDTO>> getInsumo(

@@ -2,9 +2,7 @@ package com.programacion4.unidad4ej6.feature.insumo.services.impl.domain;
 
 import com.programacion4.unidad4ej6.feature.insumo.services.impl.tasks.FetchCotizacionDolarTask;
 import org.springframework.stereotype.Service;
-
 import lombok.AllArgsConstructor;
-
 import com.programacion4.unidad4ej6.feature.insumo.services.interfaces.domain.IInsumoCreateService;
 import com.programacion4.unidad4ej6.feature.insumo.dtos.request.InsumoCreateDTO;
 import com.programacion4.unidad4ej6.feature.insumo.dtos.response.InsumoResponseDTO;
@@ -14,13 +12,13 @@ import com.programacion4.unidad4ej6.feature.insumo.repositories.IInsumoRepositor
 import com.programacion4.unidad4ej6.feature.insumo.services.interfaces.commons.IInsumoExistsByCodigoInternoService;
 import com.programacion4.unidad4ej6.config.exceptions.ConflictException;
 
+
 @Service
 @AllArgsConstructor
 public class InsumoCreateService implements IInsumoCreateService {
     
     private final IInsumoRepository insumoRepository;
     private final IInsumoExistsByCodigoInternoService insumoExistsByCodigoInternoService;
-    private final FetchCotizacionDolarTask fetchCotizacionDolarTask;
 
     @Override
     public InsumoResponseDTO createInsumo(InsumoCreateDTO dto) {

@@ -24,7 +24,7 @@ public class InsumoCreateController {
 
     private final IInsumoCreateService insumoCreateService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<BaseResponse<InsumoResponseDTO>> createInsumo(
         @Valid @RequestBody InsumoCreateDTO dto
     ) {
